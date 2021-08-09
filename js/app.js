@@ -11,7 +11,6 @@ var APP = {
         var loader = new THREE.ObjectLoader();
         var camera, scene;
 
-
         var controls;
 
         var vrButton = VRButton.createButton( renderer );
@@ -21,12 +20,11 @@ var APP = {
         var dom = document.createElement( 'div' );
         dom.appendChild( renderer.domElement );
 
-        var mouseDown = false;
-        var mouseX = 0;
-        var mouseY = 0;
 
         var rayCaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2(-100, -100);
+
+        var currentTouch = null;
 
         this.dom = dom;
 
@@ -115,8 +113,6 @@ var APP = {
             var object6 = scene.getObjectByName( "b3" );
             var object7 = scene.getObjectByName( "a4" );
             var object8 = scene.getObjectByName( "b4" );
-
-            dispatch(events.init, arguments);
         };
 
         this.setCamera = function ( value ) {
@@ -148,27 +144,11 @@ var APP = {
             }
         };
 
-        function dispatch( array, event ) {
-            for ( var i = 0, l = array.length; i < l; i ++ ) {
-                array[ i ]( event );
-            }
-        }
-
         var time, startTime, prevTime;
 
         function animate() {
             // requestAnimationFrame( animate );
             time = performance.now();
-
-            try {
-                dispatch(events.update,
-                         { time: time - startTime, delta: time - prevTime } );
-
-            } catch ( e ) {
-
-                console.error( ( e.message || e ), ( e.stack || '' ) );
-
-            }
 
             rayCaster.setFromCamera(mouse, camera);
 
@@ -179,11 +159,13 @@ var APP = {
 
             var touches = [o1, o2, o3, o4];
             var intersects = rayCaster.intersectObjects(touches);
-            // console.log(intersects);
+
             for(var i = 0; i < intersects.length; i++) {
-                // intersects[i].object.material.opacity = 1;
-                // intersects[i].object.material.color.set(0xff0000);
-                console.log(intersects[i].object.name);
+                currentTouch = intersects[i].object.name;
+            }
+
+            if(intersects.length == 0) {
+                currentTouch = null;
             }
 
             controls.update();
@@ -204,8 +186,6 @@ var APP = {
             document.addEventListener( 'pointerup', onPointerUp );
             document.addEventListener( 'pointermove', onPointerMove );
 
-            dispatch( events.start, arguments );
-
             renderer.setAnimationLoop( animate );
         };
 
@@ -219,7 +199,6 @@ var APP = {
             document.removeEventListener( 'pointerup', onPointerUp );
             document.removeEventListener( 'pointermove', onPointerMove );
 
-            dispatch( events.stop, arguments );
             renderer.setAnimationLoop( null );
         };
 
@@ -259,26 +238,21 @@ var APP = {
         }
 
         function onKeyDown( event ) {
-            dispatch( events.keydown, event );
         }
 
         function onKeyUp( event ) {
-            dispatch( events.keyup, event );
         }
 
         function onPointerDown( event ) {
-            dispatch( events.pointerdown, event );
+            console.log(currentTouch);
             event.preventDefault();
         }
 
         function onPointerUp( event ) {
-            dispatch( events.pointerup, event );
             event.preventDefault();
         }
 
         function onPointerMove( event ) {
-            dispatch( events.pointermove, event );
-
             mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
