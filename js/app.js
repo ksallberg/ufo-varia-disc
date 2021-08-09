@@ -1,3 +1,5 @@
+import { OrbitControls } from './OrbitControls.js';
+
 var APP = {
 
     Player: function () {
@@ -9,6 +11,9 @@ var APP = {
         var loader = new THREE.ObjectLoader();
         var camera, scene;
 
+
+        var controls;
+
         var vrButton = VRButton.createButton( renderer );
 
         var events = {};
@@ -19,6 +24,9 @@ var APP = {
         var mouseDown = false;
         var mouseX = 0;
         var mouseY = 0;
+
+        var rayCaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2(-100, -100);
 
         this.dom = dom;
 
@@ -68,6 +76,12 @@ var APP = {
             this.setScene( loader.parse( json.scene ) );
             this.setCamera( loader.parse( json.camera ) );
 
+            controls = new OrbitControls( camera, renderer.domElement );
+            controls.target.set( 0, 0.5, 0 );
+            controls.update();
+            controls.enablePan = false;
+            controls.enableDamping = true;
+
             events = {
                 init: [],
                 start: [],
@@ -101,10 +115,6 @@ var APP = {
             var object6 = scene.getObjectByName( "b3" );
             var object7 = scene.getObjectByName( "a4" );
             var object8 = scene.getObjectByName( "b4" );
-
-            object1.addEventListener("mouseover", function(e) {
-                e.target.style.cursor='pointer';
-            });
 
             dispatch(events.init, arguments);
         };
@@ -147,7 +157,7 @@ var APP = {
         var time, startTime, prevTime;
 
         function animate() {
-
+            // requestAnimationFrame( animate );
             time = performance.now();
 
             try {
@@ -160,9 +170,23 @@ var APP = {
 
             }
 
-            // scene.rotation.x = 0.1;
-            // scene.rotation.z = 1;
+            rayCaster.setFromCamera(mouse, camera);
 
+            var o1 = scene.getObjectByName( "touch1" );
+            var o2 = scene.getObjectByName( "touch2" );
+            var o3 = scene.getObjectByName( "touch3" );
+            var o4 = scene.getObjectByName( "touch4" );
+
+            var touches = [o1, o2, o3, o4];
+            var intersects = rayCaster.intersectObjects(touches);
+            // console.log(intersects);
+            for(var i = 0; i < intersects.length; i++) {
+                // intersects[i].object.material.opacity = 1;
+                // intersects[i].object.material.color.set(0xff0000);
+                console.log(intersects[i].object.name);
+            }
+
+            controls.update();
             renderer.render( scene, camera );
 
             prevTime = time;
@@ -199,21 +223,11 @@ var APP = {
             renderer.setAnimationLoop( null );
         };
 
-        this.render = function ( time ) {
-            dispatch( events.update, { time: time * 1000, delta: 0 } );
-            renderer.render( scene, camera );
-        };
-
         this.dispose = function () {
             renderer.dispose();
             camera = undefined;
             scene = undefined;
         };
-
-        function rotateScene(deltaX, deltaY) {
-            scene.rotation.y += deltaX / 100;
-            scene.rotation.x += deltaY / 100;
-        }
 
         function rotateUfo(degrees) {
             var object1 = scene.getObjectByName( "a2" );
@@ -255,26 +269,20 @@ var APP = {
         function onPointerDown( event ) {
             dispatch( events.pointerdown, event );
             event.preventDefault();
-            mouseDown = true;
         }
 
         function onPointerUp( event ) {
             dispatch( events.pointerup, event );
             event.preventDefault();
-            mouseDown = false;
         }
 
         function onPointerMove( event ) {
             dispatch( events.pointermove, event );
-            if(!mouseDown) {
-                return
-            }
+
+            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
             event.preventDefault();
-            var deltaX = event.clientX - mouseX;
-            var deltaY = event.clientY - mouseY;
-            mouseX = event.clientX;
-            mouseY = event.clientY;
-            rotateScene(deltaX, deltaY);
         }
     }
 };
