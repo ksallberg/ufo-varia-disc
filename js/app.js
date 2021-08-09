@@ -225,6 +225,9 @@ var APP = {
             var object7 = scene.getObjectByName( "a4" );
             var object8 = scene.getObjectByName( "b4" );
 
+            var topMarkers = scene.getObjectByName( "topmarkers" );
+            var bottomMarkers = scene.getObjectByName( "bottommarkers" );
+
             object1.rotation.x += degreesToRadians(degrees);
             object2.rotation.x += degreesToRadians(degrees);
             object3.rotation.x += degreesToRadians(degrees);
@@ -233,6 +236,8 @@ var APP = {
             object6.rotation.x += degreesToRadians(degrees);
             object7.rotation.x += degreesToRadians(degrees);
             object8.rotation.x += degreesToRadians(degrees);
+
+            topMarkers.rotation.x += degreesToRadians(degrees);
         }
 
         function degreesToRadians(degrees) {
