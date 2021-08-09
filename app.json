@@ -21,13 +21,13 @@
 			"type": "PerspectiveCamera",
 			"name": "Camera",
 			"layers": 1,
-			"matrix": [-0.3833378490816889,-5.55111746272603e-17,0.9236086489371061,0,0.9236082230567996,9.999999602782321e-7,0.3833376723227976,0,-9.236083448819999e-7,1.0000000922199965,-3.8333772294439143e-7,0,-0.000008963358336833522,9.7047186867367,-0.0000037201844193905583,1],
+			"matrix": [-0.10819518002303437,2.775558731363015e-17,0.9941300950830254,0,0.28026563048802944,0.9594376990928374,0.030502436748370502,0,-0.9538056147986494,0.2819206328751114,-0.10380650451136603,0,-12.505327642998228,3.696256164490003,-1.361005146381993,1],
 			"fov": 50,
 			"zoom": 1,
 			"near": 0.1,
 			"far": 100000,
 			"focus": 10,
-			"aspect": 1.7657657657657657,
+			"aspect": 1.4177215189873418,
 			"filmGauge": 35,
 			"filmOffset": 0
 		}
@@ -83,6 +83,14 @@
 			},
 			{
 				"uuid": "39452BC5-7F45-4656-8723-76721A4D8FDA",
+				"type": "CircleGeometry",
+				"radius": 1,
+				"segments": 8,
+				"thetaStart": 0,
+				"thetaLength": 6.283185307179586
+			},
+			{
+				"uuid": "7245CD7F-EE3E-4B91-B7D2-083661DC0031",
 				"type": "CircleGeometry",
 				"radius": 1,
 				"segments": 8,
@@ -781,6 +789,30 @@
 				"emissive": 0,
 				"envMapIntensity": 1,
 				"refractionRatio": 0.98,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"stencilWrite": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680
+			},
+			{
+				"uuid": "5355AA57-4ED2-426F-A013-96AAE0FC2554",
+				"type": "MeshStandardMaterial",
+				"color": 16777215,
+				"roughness": 1,
+				"metalness": 0,
+				"emissive": 0,
+				"envMapIntensity": 1,
+				"refractionRatio": 0.98,
+				"blending": 2,
+				"opacity": 0.22,
 				"depthFunc": 3,
 				"depthTest": true,
 				"depthWrite": true,
@@ -1534,6 +1566,74 @@
 									"geometry": "39452BC5-7F45-4656-8723-76721A4D8FDA",
 									"material": "B12C3348-4B8E-4B54-BFDE-CCA9BC2CF21C"
 								}]
+						}]
+				},
+				{
+					"uuid": "9871B327-F5B0-45C5-916C-C5D42BF86389",
+					"type": "Group",
+					"name": "touch1holder",
+					"layers": 1,
+					"matrix": [2.220446049250313e-16,0,-1,0,0,1,0,0,1,0,2.220446049250313e-16,0,0,0,0,1],
+					"children": [
+						{
+							"uuid": "536BBCEF-276E-49E8-B8D8-864B051E5457",
+							"type": "Mesh",
+							"name": "touch1",
+							"layers": 1,
+							"matrix": [1,0,0,0,0,2.220446049250313e-16,-1,0,0,1,2.220446049250313e-16,0,0,4.069418394905865,0,1],
+							"geometry": "7245CD7F-EE3E-4B91-B7D2-083661DC0031",
+							"material": "5355AA57-4ED2-426F-A013-96AAE0FC2554"
+						}]
+				},
+				{
+					"uuid": "2F88FB7D-5BCD-42FE-9E13-8B6965BF9C99",
+					"type": "Group",
+					"name": "touch2holder",
+					"layers": 1,
+					"matrix": [2.220446049250313e-16,1,-2.220446049250313e-16,0,0,2.220446049250313e-16,1,0,1,-2.220446049250313e-16,0,0,0,0,0,1],
+					"children": [
+						{
+							"uuid": "CFF96F33-85E7-4995-93E9-E928AACB8454",
+							"type": "Mesh",
+							"name": "touch2",
+							"layers": 1,
+							"matrix": [1,0,0,0,0,2.220446049250313e-16,-1,0,0,1,2.220446049250313e-16,0,0,4.069418394905865,0,1],
+							"geometry": "7245CD7F-EE3E-4B91-B7D2-083661DC0031",
+							"material": "5355AA57-4ED2-426F-A013-96AAE0FC2554"
+						}]
+				},
+				{
+					"uuid": "BD7BFEA2-6D89-4C83-B614-F402F6E7BBC3",
+					"type": "Group",
+					"name": "touch3holder",
+					"layers": 1,
+					"matrix": [2.220446049250313e-16,1.2246467991473532e-16,1,0,0,-1,1.2246467991473532e-16,0,1,-2.465190328815662e-32,-2.220446049250313e-16,0,0,0,0,1],
+					"children": [
+						{
+							"uuid": "2F9095DB-EE47-486E-89E7-7F6AB4F6E3F3",
+							"type": "Mesh",
+							"name": "touch3",
+							"layers": 1,
+							"matrix": [1,0,0,0,0,2.220446049250313e-16,-1,0,0,1,2.220446049250313e-16,0,0,4.069418394905865,0,1],
+							"geometry": "7245CD7F-EE3E-4B91-B7D2-083661DC0031",
+							"material": "5355AA57-4ED2-426F-A013-96AAE0FC2554"
+						}]
+				},
+				{
+					"uuid": "DCA217D3-0C63-4F3A-AA18-02F4A444F13C",
+					"type": "Group",
+					"name": "touch4holder",
+					"layers": 1,
+					"matrix": [2.220446049250313e-16,-1,-2.220446049250313e-16,0,0,2.220446049250313e-16,-1,0,1,2.220446049250313e-16,0,0,0,0,0,1],
+					"children": [
+						{
+							"uuid": "87B2F79B-E573-4621-B4B0-ECC1EBD8F82F",
+							"type": "Mesh",
+							"name": "touch4",
+							"layers": 1,
+							"matrix": [1,0,0,0,0,2.220446049250313e-16,-1,0,0,1,2.220446049250313e-16,0,0,4.069418394905865,0,1],
+							"geometry": "7245CD7F-EE3E-4B91-B7D2-083661DC0031",
+							"material": "5355AA57-4ED2-426F-A013-96AAE0FC2554"
 						}]
 				}]
 		}
