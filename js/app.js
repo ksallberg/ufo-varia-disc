@@ -1,4 +1,5 @@
 import { OrbitControls } from './OrbitControls.js';
+import { TrackballControls } from './TrackballControls.js';
 
 var APP = {
 
@@ -15,11 +16,8 @@ var APP = {
 
         var vrButton = VRButton.createButton( renderer );
 
-        var events = {};
-
         var dom = document.createElement( 'div' );
         dom.appendChild( renderer.domElement );
-
 
         var rayCaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2(-100, -100);
@@ -49,58 +47,15 @@ var APP = {
 
         this.load = function ( json ) {
 
-            var project = json.project;
-
-            if ( project.vr !== undefined ) {
-                renderer.xr.enabled = project.vr;
-            }
-            if ( project.shadows !== undefined ) {
-                renderer.shadowMap.enabled = project.shadows;
-            }
-            if ( project.shadowType !== undefined ) {
-                renderer.shadowMap.type = project.shadowType;
-            }
-            if ( project.toneMapping !== undefined ) {
-                renderer.toneMapping = project.toneMapping;
-            }
-            if ( project.toneMappingExposure !== undefined ) {
-                renderer.toneMappingExposure = project.toneMappingExposure;
-            }
-            if ( project.physicallyCorrectLights !== undefined ) {
-                renderer.physicallyCorrectLights =
-                    project.physicallyCorrectLights;
-            }
-
             this.setScene( loader.parse( json.scene ) );
             this.setCamera( loader.parse( json.camera ) );
 
             controls = new OrbitControls( camera, renderer.domElement );
-            controls.target.set( 0, 0.5, 0 );
-            controls.update();
-            controls.enablePan = false;
+            controls.enablePan = true;
             controls.enableDamping = true;
-
-            events = {
-                init: [],
-                start: [],
-                stop: [],
-                keydown: [],
-                keyup: [],
-                pointerdown: [],
-                pointerup: [],
-                pointermove: [],
-                update: []
-            };
 
             var scriptWrapParams = 'player,renderer,scene,camera';
             var scriptWrapResultObj = {};
-
-            for ( var eventKey in events ) {
-
-                scriptWrapParams += ',' + eventKey;
-                scriptWrapResultObj[ eventKey ] = eventKey;
-
-            }
 
             var scriptWrapResult =
                 JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
@@ -147,7 +102,6 @@ var APP = {
         var time, startTime, prevTime;
 
         function animate() {
-            // requestAnimationFrame( animate );
             time = performance.now();
 
             rayCaster.setFromCamera(mouse, camera);
@@ -169,7 +123,7 @@ var APP = {
             }
 
             controls.update();
-            renderer.render( scene, camera );
+            renderer.render(scene, camera);
 
             prevTime = time;
         }
@@ -180,8 +134,6 @@ var APP = {
 
             startTime = prevTime = performance.now();
 
-            document.addEventListener( 'keydown', onKeyDown );
-            document.addEventListener( 'keyup', onKeyUp );
             document.addEventListener( 'pointerdown', onPointerDown );
             document.addEventListener( 'pointerup', onPointerUp );
             document.addEventListener( 'pointermove', onPointerMove );
@@ -193,8 +145,6 @@ var APP = {
 
             if ( renderer.xr.enabled ) vrButton.remove();
 
-            document.removeEventListener( 'keydown', onKeyDown );
-            document.removeEventListener( 'keyup', onKeyUp );
             document.removeEventListener( 'pointerdown', onPointerDown );
             document.removeEventListener( 'pointerup', onPointerUp );
             document.removeEventListener( 'pointermove', onPointerMove );
@@ -235,12 +185,6 @@ var APP = {
 
         function degreesToRadians(degrees) {
             return degrees * (Math.PI/180);
-        }
-
-        function onKeyDown( event ) {
-        }
-
-        function onKeyUp( event ) {
         }
 
         function onPointerDown( event ) {
