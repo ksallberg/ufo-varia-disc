@@ -1,115 +1,79 @@
-import { OrbitControls } from './OrbitControls.js';
 import { TrackballControls } from './TrackballControls.js';
 
 var APP = {
 
     Player: function () {
 
-        var renderer = new THREE.WebGLRenderer( { antialias: true } );
-        renderer.setPixelRatio( window.devicePixelRatio );
+        var renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setPixelRatio(window.devicePixelRatio);
         renderer.outputEncoding = THREE.sRGBEncoding;
+        document.body.appendChild(renderer.domElement);
 
         var loader = new THREE.ObjectLoader();
         var camera, scene;
-
         var controls;
-
-        var vrButton = VRButton.createButton( renderer );
-
-        var dom = document.createElement( 'div' );
-        dom.appendChild( renderer.domElement );
-
         var rayCaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2(-100, -100);
-
         var currentTouch = null;
 
-        this.dom = dom;
+        var topPart  = [];
+        var rotater1 = [];
+        var rotater2 = [];
+        var rotater3 = [];
+        var rotater4 = [];
 
-        this.width = 500;
+        this.width  = 500;
         this.height = 500;
 
-        document.
-            getElementById("rotera").
-            addEventListener("click",
-                             function() {
-                                 rotateUfo(90);
-                             }
-                            );
+        document.getElementById("rotera").
+            addEventListener("click", function() { rotateUfo(90); });
 
-        document.
-            getElementById("rotera2").
-            addEventListener("click",
-                             function() {
-                                 rotateUfo(-90);
-                             }
-                            );
+        document.getElementById("rotera2").
+            addEventListener("click", function() { rotateUfo(-90); });
 
-        this.load = function ( json ) {
-
-            this.setScene( loader.parse( json.scene ) );
-            this.setCamera( loader.parse( json.camera ) );
-
-            controls = new OrbitControls( camera, renderer.domElement );
-            controls.enablePan = true;
-            controls.enableDamping = true;
-
-            var scriptWrapParams = 'player,renderer,scene,camera';
-            var scriptWrapResultObj = {};
-
-            var scriptWrapResult =
-                JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
-
-            var object1 = scene.getObjectByName( "a2" );
-            var object2 = scene.getObjectByName( "a" );
-            var object3 = scene.getObjectByName( "b" );
-            var object4 = scene.getObjectByName( "b2" );
-            var object5 = scene.getObjectByName( "a3" );
-            var object6 = scene.getObjectByName( "b3" );
-            var object7 = scene.getObjectByName( "a4" );
-            var object8 = scene.getObjectByName( "b4" );
+        this.load = function(json) {
+            this.setScene(loader.parse(json.scene));
+            this.setCamera(loader.parse(json.camera));
         };
 
-        this.setCamera = function ( value ) {
+        this.setCamera = function(value) {
             camera = value;
             camera.aspect = this.width / this.height;
             camera.updateProjectionMatrix();
         };
 
-        this.setScene = function ( value ) {
+        this.setScene = function(value) {
             scene = value;
         };
 
-        this.setPixelRatio = function ( pixelRatio ) {
+        this.setPixelRatio = function(pixelRatio) {
             renderer.setPixelRatio( pixelRatio );
         };
 
-        this.setSize = function ( width, height ) {
+        this.setSize = function (width, height) {
 
             this.width = width;
             this.height = height;
 
-            if ( camera ) {
+            if(camera) {
                 camera.aspect = this.width / this.height;
                 camera.updateProjectionMatrix();
             }
 
-            if ( renderer ) {
-                renderer.setSize( width, height );
+            if(renderer) {
+                renderer.setSize(width, height);
             }
         };
 
-        var time, startTime, prevTime;
-
         function animate() {
-            time = performance.now();
+            requestAnimationFrame(animate);
 
             rayCaster.setFromCamera(mouse, camera);
 
-            var o1 = scene.getObjectByName( "touch1" );
-            var o2 = scene.getObjectByName( "touch2" );
-            var o3 = scene.getObjectByName( "touch3" );
-            var o4 = scene.getObjectByName( "touch4" );
+            var o1 = scene.getObjectByName("touch1");
+            var o2 = scene.getObjectByName("touch2");
+            var o3 = scene.getObjectByName("touch3");
+            var o4 = scene.getObjectByName("touch4");
 
             var touches = [o1, o2, o3, o4];
             var intersects = rayCaster.intersectObjects(touches);
@@ -124,32 +88,57 @@ var APP = {
 
             controls.update();
             renderer.render(scene, camera);
-
-            prevTime = time;
         }
 
-        this.play = function () {
+        this.play = function() {
 
-            if ( renderer.xr.enabled ) dom.append( vrButton );
+            topPart = [scene.getObjectByName("a2"),
+                       scene.getObjectByName("a"),
+                       scene.getObjectByName("b"),
+                       scene.getObjectByName("b2"),
+                       scene.getObjectByName("a3"),
+                       scene.getObjectByName("b3"),
+                       scene.getObjectByName("a4"),
+                       scene.getObjectByName("b4")];
 
-            startTime = prevTime = performance.now();
+            rotater1 = [scene.getObjectByName("a"),
+                        scene.getObjectByName("b"),
+                        scene.getObjectByName("c"),
+                        scene.getObjectByName("d")];
+            rotater2 = [scene.getObjectByName("a2"),
+                        scene.getObjectByName("b2"),
+                        scene.getObjectByName("c2"),
+                        scene.getObjectByName("d2")];
+            rotater3 = [scene.getObjectByName("a3"),
+                        scene.getObjectByName("b3"),
+                        scene.getObjectByName("c3"),
+                        scene.getObjectByName("d3")];
+            rotater4 = [scene.getObjectByName("a4"),
+                        scene.getObjectByName("b4"),
+                        scene.getObjectByName("c4"),
+                        scene.getObjectByName("d4")];
 
-            document.addEventListener( 'pointerdown', onPointerDown );
-            document.addEventListener( 'pointerup', onPointerUp );
-            document.addEventListener( 'pointermove', onPointerMove );
+            document.addEventListener('pointerdown', onPointerDown);
+            document.addEventListener('pointerup', onPointerUp);
+            document.addEventListener('pointermove', onPointerMove);
 
-            renderer.setAnimationLoop( animate );
+            controls = new TrackballControls(camera, renderer.domElement);
+
+            controls.rotateSpeed = 2.0;
+            controls.zoomSpeed = 1.2;
+            controls.panSpeed = 0.8;
+
+            controls.keys = ['KeyA', 'KeyS', 'KeyD'];
+            animate();
         };
 
-        this.stop = function () {
+        this.stop = function() {
 
-            if ( renderer.xr.enabled ) vrButton.remove();
+            document.removeEventListener('pointerdown', onPointerDown);
+            document.removeEventListener('pointerup', onPointerUp);
+            document.removeEventListener('pointermove', onPointerMove);
 
-            document.removeEventListener( 'pointerdown', onPointerDown );
-            document.removeEventListener( 'pointerup', onPointerUp );
-            document.removeEventListener( 'pointermove', onPointerMove );
-
-            renderer.setAnimationLoop( null );
+            renderer.setAnimationLoop(null);
         };
 
         this.dispose = function () {
@@ -159,26 +148,13 @@ var APP = {
         };
 
         function rotateUfo(degrees) {
-            var object1 = scene.getObjectByName( "a2" );
-            var object2 = scene.getObjectByName( "a" );
-            var object3 = scene.getObjectByName( "b" );
-            var object4 = scene.getObjectByName( "b2" );
-            var object5 = scene.getObjectByName( "a3" );
-            var object6 = scene.getObjectByName( "b3" );
-            var object7 = scene.getObjectByName( "a4" );
-            var object8 = scene.getObjectByName( "b4" );
 
-            var topMarkers = scene.getObjectByName( "topmarkers" );
-            var bottomMarkers = scene.getObjectByName( "bottommarkers" );
+            var topMarkers = scene.getObjectByName("topmarkers");
+            var bottomMarkers = scene.getObjectByName("bottommarkers");
 
-            object1.rotation.x += degreesToRadians(degrees);
-            object2.rotation.x += degreesToRadians(degrees);
-            object3.rotation.x += degreesToRadians(degrees);
-            object4.rotation.x += degreesToRadians(degrees);
-            object5.rotation.x += degreesToRadians(degrees);
-            object6.rotation.x += degreesToRadians(degrees);
-            object7.rotation.x += degreesToRadians(degrees);
-            object8.rotation.x += degreesToRadians(degrees);
+            for(var i = 0; i < topPart.length; i ++) {
+                topPart[i].rotation.x += degreesToRadians(degrees);
+            }
 
             topMarkers.rotation.x += degreesToRadians(degrees);
         }
@@ -187,16 +163,19 @@ var APP = {
             return degrees * (Math.PI/180);
         }
 
-        function onPointerDown( event ) {
+        function onPointerDown(event) {
+            if(currentTouch==null) {
+                return;
+            }
             console.log(currentTouch);
             event.preventDefault();
         }
 
-        function onPointerUp( event ) {
+        function onPointerUp(event) {
             event.preventDefault();
         }
 
-        function onPointerMove( event ) {
+        function onPointerMove(event) {
             mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
