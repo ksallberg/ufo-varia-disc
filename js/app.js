@@ -16,7 +16,7 @@ var APP = {
         var mouse = new THREE.Vector2(-100, -100);
         var currentTouch = null;
 
-        var topPart  = [];
+        var topPart  = new Set();
         var rotater1 = [];
         var rotater2 = [];
         var rotater3 = [];
@@ -26,10 +26,10 @@ var APP = {
         this.height = 500;
 
         document.getElementById("rotera").
-            addEventListener("click", function() { rotateUfo(90); });
+            addEventListener("click", function() { rotateUfo(10); });
 
         document.getElementById("rotera2").
-            addEventListener("click", function() { rotateUfo(-90); });
+            addEventListener("click", function() { rotateUfo(-10); });
 
         this.load = function(json) {
             this.setScene(loader.parse(json.scene));
@@ -92,27 +92,30 @@ var APP = {
 
         this.play = function() {
 
-            topPart = [scene.getObjectByName("a2"),
-                       scene.getObjectByName("a"),
-                       scene.getObjectByName("b"),
-                       scene.getObjectByName("b2"),
-                       scene.getObjectByName("a3"),
-                       scene.getObjectByName("b3"),
-                       scene.getObjectByName("a4"),
-                       scene.getObjectByName("b4")];
+            topPart.add(scene.getObjectByName("a2"));
+            topPart.add(scene.getObjectByName("a"));
+            topPart.add(scene.getObjectByName("b"));
+            topPart.add(scene.getObjectByName("b2"));
+            topPart.add(scene.getObjectByName("a3"));
+            topPart.add(scene.getObjectByName("b3"));
+            topPart.add(scene.getObjectByName("a4"));
+            topPart.add(scene.getObjectByName("b4"));
 
             rotater1 = [scene.getObjectByName("a"),
                         scene.getObjectByName("b"),
                         scene.getObjectByName("c"),
                         scene.getObjectByName("d")];
+
             rotater2 = [scene.getObjectByName("a2"),
                         scene.getObjectByName("b2"),
                         scene.getObjectByName("c2"),
                         scene.getObjectByName("d2")];
+
             rotater3 = [scene.getObjectByName("a3"),
                         scene.getObjectByName("b3"),
                         scene.getObjectByName("c3"),
                         scene.getObjectByName("d3")];
+
             rotater4 = [scene.getObjectByName("a4"),
                         scene.getObjectByName("b4"),
                         scene.getObjectByName("c4"),
@@ -152,9 +155,9 @@ var APP = {
             var topMarkers = scene.getObjectByName("topmarkers");
             var bottomMarkers = scene.getObjectByName("bottommarkers");
 
-            for(var i = 0; i < topPart.length; i ++) {
-                topPart[i].rotation.x += degreesToRadians(degrees);
-            }
+            topPart.forEach(function(knob) {
+                knob.rotation.x += degreesToRadians(degrees);
+            });
 
             topMarkers.rotation.x += degreesToRadians(degrees);
         }
@@ -163,11 +166,51 @@ var APP = {
             return degrees * (Math.PI/180);
         }
 
+        function radiansToDegrees(radians) {
+            return (radians * 180) / Math.PI;
+        }
+
+        /*
+          Expected input, an array of touch pads
+         */
+        function spinRotater(rotater) {
+            rotater.forEach(function (knob) {
+                knob.rotation.y += degreesToRadians(-90);
+            });
+
+            // The idea is to remove the first current
+            // knob in the rotater. Then put it at the end of
+            // the array, the third knob is to join the topPart
+
+            // This depends on the order the knobs happen to be
+            // placed in the 3d model.
+            var firstKnob = rotater[0];
+            topPart.delete(firstKnob);
+            topPart.add(rotater[2]);
+
+            var toRemove = rotater.shift();
+            rotater.push(toRemove);
+        }
+
         function onPointerDown(event) {
             if(currentTouch==null) {
                 return;
             }
-            console.log(currentTouch);
+            switch(currentTouch) {
+            case "touch1":
+                spinRotater(rotater1);
+                break;
+            case "touch2":
+                spinRotater(rotater2);
+                break;
+            case "touch3":
+                spinRotater(rotater3);
+                break;
+            case "touch4":
+                spinRotater(rotater4);
+                break;
+            default:
+            }
             event.preventDefault();
         }
 
