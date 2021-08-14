@@ -26,10 +26,10 @@ var APP = {
         this.height = 500;
 
         document.getElementById("rotera").
-            addEventListener("click", function() { rotateUfo(10); });
+            addEventListener("click", function() { rotateUfo(90); });
 
         document.getElementById("rotera2").
-            addEventListener("click", function() { rotateUfo(-10); });
+            addEventListener("click", function() { rotateUfo(-90); });
 
         this.load = function(json) {
             this.setScene(loader.parse(json.scene));
@@ -131,6 +131,8 @@ var APP = {
             controls.zoomSpeed = 1.2;
             controls.panSpeed = 0.8;
 
+            scene.rotation.z = degreesToRadians(90);
+
             controls.keys = ['KeyA', 'KeyS', 'KeyD'];
             animate();
         };
@@ -160,6 +162,42 @@ var APP = {
             });
 
             topMarkers.rotation.x += degreesToRadians(degrees);
+            // console.log(getTopLevelKnobs());
+
+            // counter clock wise
+            if(degrees == 90) {
+                var tmp1 = rotater4[0];
+                var tmp2 = rotater4[1];
+
+                rotater4[0] = rotater3[0];
+                rotater4[1] = rotater3[1];
+
+                rotater3[0] = rotater2[0];
+                rotater3[1] = rotater2[1];
+
+                rotater2[0] = rotater1[0];
+                rotater2[1] = rotater1[1];
+
+                rotater1[0] = tmp1;
+                rotater1[1] = tmp2;
+
+            // clock wise
+            } else if(degrees == -90) {
+                var tmp1 = rotater4[0];
+                var tmp2 = rotater4[1];
+
+                rotater4[0] = rotater1[0];
+                rotater4[1] = rotater1[1];
+
+                rotater1[0] = rotater2[0];
+                rotater1[1] = rotater2[1];
+
+                rotater2[0] = rotater3[0];
+                rotater2[1] = rotater3[1];
+
+                rotater3[0] = tmp1;
+                rotater3[1] = tmp2;
+            }
         }
 
         function degreesToRadians(degrees) {

@@ -812,7 +812,7 @@
 				"envMapIntensity": 1,
 				"refractionRatio": 0.98,
 				"blending": 2,
-				"opacity": 0.22,
+				"opacity": 0,
 				"depthFunc": 3,
 				"depthTest": true,
 				"depthWrite": true,
